@@ -90,7 +90,6 @@ function Sentiment({ pos, neg }) {
 }
 
 export default function NewsItemCard(data) {
-  console.log(data.data);
   return (
     <Card
       variant="outlined"
@@ -135,8 +134,8 @@ export default function NewsItemCard(data) {
         }}
       >
         <Sentiment
-          pos={parseInt(data.data.pos)}
-          neg={parseInt(data.data.neg)}
+          pos={parseInt(data.data.pos, 10)}
+          neg={parseInt(data.data.neg, 10)}
         />
       </CardOverflow>
     </Card>

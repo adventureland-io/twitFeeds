@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import InputLabel from "@mui/material/InputLabel";
 
 import FormControl from "@mui/material/FormControl";
-import Box from "@mui/material/Box";
 import NativeSelect from "@mui/material/NativeSelect";
 import axios from "axios";
 import Skeleton from "@mui/material/Skeleton";
@@ -25,7 +24,7 @@ import finFeedLogo from "../../../public/images/finFeedLogo.png";
 const Dashboard = (props) => {
   const [feed, setFeed] = useState("cnbc");
   const [items, setItems] = useState([]);
-  const [entities, setEntities] = useState([]);
+  // const [entities, setEntities] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -42,29 +41,29 @@ const Dashboard = (props) => {
   }, [feed]);
 
   //function to set named entities
-  const GetEntities = async (result) => {
-    let final = [];
+  // const GetEntities = async (result) => {
+  //   let final = [];
 
-    await Promise.allSettled(
-      result.map(async (item) => {
-        const emoRes = await axios.post(
-          "https://api.text-miner.com/ner",
-          `message=${item.text}`,
-          {
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            }
-          }
-        );
-        setEntities((prev) => {
-          return [...prev, emoRes.data];
-        });
-        final.push({ ...item, entities: emoRes.data });
-      })
-    );
-    // setItems(final)
-    setLoading(false);
-  };
+  //   await Promise.allSettled(
+  //     result.map(async (item) => {
+  //       const emoRes = await axios.post(
+  //         "https://api.text-miner.com/ner",
+  //         `message=${item.text}`,
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/x-www-form-urlencoded"
+  //           }
+  //         }
+  //       );
+  //       setEntities((prev) => {
+  //         return [...prev, emoRes.data];
+  //       });
+  //       final.push({ ...item, entities: emoRes.data });
+  //     })
+  //   );
+  //   // setItems(final)
+  //   setLoading(false);
+  // };
 
   //function to get news text, and sentiment score for each news
   const GetNewsReports = async (provider) => {
@@ -107,7 +106,7 @@ const Dashboard = (props) => {
 
   //function called whenever news provider is changed
   const fetchNewsOnClick = (event) => {
-    setEntities([]);
+    // setEntities([]);
     setFeed(event.target.value);
     const provider = event.target.value;
     GetNewsReports(provider);
@@ -183,11 +182,11 @@ const Dashboard = (props) => {
                     </InputLabel>
                     <NativeSelect
                       onChange={fetchNewsOnClick}
-                      defaultValue="cnbc"
                       inputProps={{
                         name: "Select News Source",
                         id: "demo-select-small"
                       }}
+                      value={feed}
                     >
                       <option value="cnbc">CNBC</option>
                       <option value="wsj">WSJ</option>
@@ -208,71 +207,67 @@ const Dashboard = (props) => {
         </AppBar>
       </ElevationScroll>
       <Toolbar />
-      <Container maxWidth="sm">
-        <Box sx={{ my: 2 }}>
-          <div>
-            {!loading && items?.length === 0 ? (
-              <Box className="empty-box">{GetNewsReports(feed)}</Box>
-            ) : loading ? (
-              [1, 2, 3, 4, 5, 6, 7].map((e, i) => {
-                return (
-                  <Card
-                    key={i}
-                    variant="outlined"
-                    orientation="vertical"
+      <Container maxWidth="sm" sx={{ paddingTop: "32px" }}>
+        <React.Fragment>
+          {!loading && items?.length === 0 ? (
+            <div>{GetNewsReports(feed)}</div>
+          ) : loading ? (
+            [1, 2, 3, 4, 5, 6, 7].map((e, i) => {
+              return (
+                <Card
+                  key={i}
+                  variant="outlined"
+                  orientation="vertical"
+                  sx={{
+                    mb: 3,
+                    gap: 2,
+                    "&:hover": {
+                      boxShadow: "md",
+                      borderColor: "neutral.outlinedHoverBorder"
+                    }
+                  }}
+                >
+                  <React.Fragment key={i}>
+                    <Skeleton
+                      animation="wave"
+                      height={30}
+                      style={{ marginBottom: 6 }}
+                    />
+                    <Skeleton
+                      animation="wave"
+                      height={30}
+                      style={{ marginBottom: 12 }}
+                      width="80%"
+                    />
+                    <Skeleton animation="wave" height={10} width="40%" />
+                  </React.Fragment>
+                  <CardOverflow
+                    variant="soft"
                     sx={{
-                      mb: 3,
-                      gap: 2,
-                      "&:hover": {
-                        boxShadow: "md",
-                        borderColor: "neutral.outlinedHoverBorder"
-                      }
+                      display: "flex",
+                      gap: 1.5,
+                      py: 1.5,
+                      px: "var(--Card-padding)",
+                      bgcolor: "background.level1"
                     }}
                   >
-                    <Box key={i} sx={{ minHeight: "100px" }}>
-                      <React.Fragment>
-                        <Skeleton
-                          animation="wave"
-                          height={30}
-                          style={{ marginBottom: 6 }}
-                        />
-                        <Skeleton
-                          animation="wave"
-                          height={30}
-                          style={{ marginBottom: 12 }}
-                          width="80%"
-                        />
-                        <Skeleton animation="wave" height={10} width="40%" />
-                      </React.Fragment>
-                    </Box>
-                    <CardOverflow
-                      variant="soft"
-                      sx={{
-                        display: "flex",
-                        gap: 1.5,
-                        py: 1.5,
-                        px: "var(--Card-padding)",
-                        bgcolor: "background.level1"
-                      }}
-                    >
-                      <Skeleton animation="wave" height={20} width="40%" />
-                    </CardOverflow>
-                  </Card>
+                    <Skeleton animation="wave" height={20} width="40%" />
+                  </CardOverflow>
+                </Card>
+              );
+            })
+          ) : (
+            <div>
+              {sortDataByDate(items, "desc").map((item, i) => {
+                return (
+                  <div key={i}>
+                    <NewsItemCard data={item} />
+                  </div>
                 );
-              })
-            ) : (
-              <div>
-                {sortDataByDate(items, "desc").map((item, i) => {
-                  return (
-                    <div key={i}>
-                      <NewsItemCard data={item} />
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </Box>
+              })}
+            </div>
+          )}
+        </React.Fragment>
       </Container>
     </React.Fragment>
   );
