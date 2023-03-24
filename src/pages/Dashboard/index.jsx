@@ -19,7 +19,6 @@ import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 
 import NewsItemCard from "../../components/NewsItemCard";
-import finFeedLogo from "../../../public/images/finFeedLogo.png";
 
 const Dashboard = (props) => {
   const [feed, setFeed] = useState("cnbc");
@@ -170,7 +169,11 @@ const Dashboard = (props) => {
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <img src={finFeedLogo} width={48} alt="FinFeed logo" />
+                <img
+                  src="/images/finFeedLogo.png"
+                  width={48}
+                  alt="FinFeed logo"
+                />
                 <Typography
                   variant="h6"
                   component="div"
