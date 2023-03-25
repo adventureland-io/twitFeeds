@@ -71,6 +71,7 @@ const Dashboard = (props) => {
       const res = await axios.get(
         `https://biz-api.text-miner.com/finfeed/${provider}`
       );
+
       let result = [];
       await Promise.allSettled(
         JSON.parse(res.data).map(async (item, i) => {
@@ -95,6 +96,7 @@ const Dashboard = (props) => {
         })
       );
       setItems(result);
+
       setLoading(false);
 
       // GetEntities(result)

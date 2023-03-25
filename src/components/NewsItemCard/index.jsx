@@ -89,7 +89,7 @@ function Sentiment({ pos, neg }) {
   return <React.Fragment>{sentiment}</React.Fragment>;
 }
 
-export default function NewsItemCard(data) {
+const NewsItemCard = React.memo(function NewsItemCard(data) {
   return (
     <Card
       variant="outlined"
@@ -140,4 +140,6 @@ export default function NewsItemCard(data) {
       </CardOverflow>
     </Card>
   );
-}
+});
+
+export default NewsItemCard;
